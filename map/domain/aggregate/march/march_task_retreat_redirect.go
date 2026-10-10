@@ -8,14 +8,14 @@ import (
 )
 
 type MarchTaskRetreatRedirect struct {
-	marchTaskBase
+	MarchTaskBase
 	point          types.Point
 	targetObjectID int64
 }
 
 func NewMarchTaskRetreatRedirect(march *March, point types.Point, targetObjectID int64) *MarchTaskRetreatRedirect {
 	task := &MarchTaskRetreatRedirect{
-		marchTaskBase: marchTaskBase{
+		MarchTaskBase: MarchTaskBase{
 			march: march,
 		},
 		point:          point,

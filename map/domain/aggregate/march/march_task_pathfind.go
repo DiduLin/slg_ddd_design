@@ -6,13 +6,13 @@ import (
 )
 
 type MarchTaskPathFind struct {
-	marchTaskBase
-	pathfindContext *MarchMoveContext
+	MarchTaskBase
+	pathfindContext *MarchTaskContext
 }
 
-func NewMarchTaskPathfind(march *March, moveContext *MarchMoveContext) *MarchTaskPathFind {
+func NewMarchTaskPathfind(march *March, moveContext *MarchTaskContext) *MarchTaskPathFind {
 	task := &MarchTaskPathFind{
-		marchTaskBase: marchTaskBase{
+		MarchTaskBase: MarchTaskBase{
 			march:    march,
 			duration: time.Second * 3,
 		},

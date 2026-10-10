@@ -6,13 +6,13 @@ import (
 )
 
 type MarchTaskMove struct {
-	marchTaskBase
-	context *MarchMoveContext
+	MarchTaskBase
+	context *MarchTaskContext
 }
 
-func NewMarchTaskMove(march *March, context *MarchMoveContext) *MarchTaskMove {
+func NewMarchTaskMove(march *March, context *MarchTaskContext) *MarchTaskMove {
 	task := &MarchTaskMove{
-		marchTaskBase: marchTaskBase{
+		MarchTaskBase: MarchTaskBase{
 			march:    march,
 			duration: context.Speed,
 		},

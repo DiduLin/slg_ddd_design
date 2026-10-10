@@ -25,7 +25,7 @@ type (
 		OnResume(now time.Time)
 	}
 
-	marchTaskBase struct {
+	MarchTaskBase struct {
 		started    bool
 		duration   time.Duration
 		deadline   time.Time
@@ -37,7 +37,7 @@ type (
 	}
 )
 
-func (p *marchTaskBase) Start(now time.Time) {
+func (p *MarchTaskBase) Start(now time.Time) {
 	p.started = true
 	p.deadline = now.Add(p.duration)
 
@@ -48,15 +48,15 @@ func (p *marchTaskBase) Start(now time.Time) {
 	}
 }
 
-func (p *marchTaskBase) IsStarted() bool {
+func (p *MarchTaskBase) IsStarted() bool {
 	return p.started
 }
 
-func (p *marchTaskBase) Deadline() time.Time {
+func (p *MarchTaskBase) Deadline() time.Time {
 	return p.deadline
 }
 
-func (p *marchTaskBase) Pause(now time.Time) {
+func (p *MarchTaskBase) Pause(now time.Time) {
 	p.paused = true
 	p.pauseTime = now
 
@@ -65,11 +65,11 @@ func (p *marchTaskBase) Pause(now time.Time) {
 	}
 }
 
-func (p *marchTaskBase) IsPaused() bool {
+func (p *MarchTaskBase) IsPaused() bool {
 	return p.paused
 }
 
-func (p *marchTaskBase) Resume(now time.Time) {
+func (p *MarchTaskBase) Resume(now time.Time) {
 	if !p.IsPaused() {
 		return
 	}
@@ -82,7 +82,7 @@ func (p *marchTaskBase) Resume(now time.Time) {
 	}
 }
 
-func (p *marchTaskBase) Complete(now time.Time) {
+func (p *MarchTaskBase) Complete(now time.Time) {
 	p.isComplete = true
 
 	if p.handler != nil {
@@ -90,11 +90,11 @@ func (p *marchTaskBase) Complete(now time.Time) {
 	}
 }
 
-func (p *marchTaskBase) IsComplete() bool {
+func (p *MarchTaskBase) IsComplete() bool {
 	return p.isComplete
 }
 
-func (p *marchTaskBase) Update(now time.Time) {
+func (p *MarchTaskBase) Update(now time.Time) {
 	if p.IsComplete() {
 		return
 	}

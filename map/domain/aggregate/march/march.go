@@ -22,7 +22,7 @@ type March struct {
 	homeObjectID int64
 
 	pathfindGateway acl.PathFindGateway
-	moveContext     *MarchMoveContext
+	taskContext     *MarchTaskContext
 }
 
 func NewMarch(objectID int64, eventbus acl.Eventbus, clock acl.Clock, pathfindGateway acl.PathFindGateway) *March {
@@ -62,18 +62,7 @@ func (p *March) Update(now time.Time) {
 func (p *March) StartMarchStay(speed time.Duration, point *types.Point, path []*types.Point) {
 	p.tasks = nil
 	p.currPoint = path[0]
-
-	p.moveContext = &MarchMoveContext{
-		Command: enum.MarchCommand_Stay,
-		Speed:   speed,
-		Start:   p.currPoint,
-		End:     point,
-		Path:    path,
-		State:   enum.MarchState_Moving,
-	}
-	task1 := NewMarchTaskMove(p, p.moveContext)
-	task2 := NewMarchTaskStay(p)
-	p.addTask(task1, task2)
+	p.addTask(NewMarchStayTask(p, speed, point, path))
 }
 
 func (p *March) TrapedInBattle(now time.Time) {
@@ -96,20 +85,7 @@ func (p *March) BattleEnd(now time.Time) {
 
 func (p *March) BattleFail(now time.Time) {
 	p.tasks = nil
-	p.moveContext = &MarchMoveContext{
-		Command:        enum.MarchCommand_Retreat,
-		Speed:          time.Second * 3,
-		Start:          p.currPoint,
-		End:            &p.homePoint,
-		TargetObjectID: p.homeObjectID,
-		Path:           nil,
-		State:          enum.MarchState_Rout,
-	}
-	p.addTask(
-		NewMarchTaskPathfind(p, p.moveContext),
-		NewMarchTaskMove(p, p.moveContext),
-		NewMarchTaskStay(p),
-	)
+	p.addTask(NewRetreatTask(p))
 }
 
 func (p *March) changeState(state enum.MarchState) {
@@ -132,7 +108,7 @@ func (p *March) pauseTask(now time.Time) {
 }
 
 func (p *March) moveNext() {
-	ctx := p.moveContext
+	ctx := p.taskContext
 	if ctx.PathIndex < len(ctx.Path)-1 {
 		ctx.PathIndex++
 		point := ctx.Path[ctx.PathIndex]
@@ -141,7 +117,7 @@ func (p *March) moveNext() {
 }
 
 func (p *March) requestPathFind() error {
-	ctx := p.moveContext
+	ctx := p.taskContext
 	return p.pathfindGateway.FindPath(p.objectID, ctx.Command, ctx.TargetObjectID, ctx.Start, ctx.End)
 }
 
@@ -149,14 +125,14 @@ func (p *March) pathfindFail() {
 	p.tasks = nil
 
 	// 回城寻路失败，直接返回出生点
-	if p.moveContext.Command == enum.MarchCommand_Retreat {
-		p.changeState(p.moveContext.State)
-		p.addTask(NewMarchTaskRetreatRedirect(p, *p.moveContext.End, p.moveContext.TargetObjectID))
+	if p.taskContext.Command == enum.MarchCommand_Retreat {
+		p.changeState(p.taskContext.State)
+		p.addTask(NewMarchTaskRetreatRedirect(p, *p.taskContext.End, p.taskContext.TargetObjectID))
 	}
 }
 
 func (p *March) RespondPathfind(path []*types.Point) {
-	p.moveContext.Path = path
+	p.taskContext.Path = path
 	if len(p.tasks) > 0 {
 		task := p.tasks[len(p.tasks)-1]
 		if pathfindTask, ok := task.(*MarchTaskPathFind); ok {

@@ -8,7 +8,11 @@ import (
 )
 
 type (
-	MarchMoveContext struct {
+	MarchTaskContext struct {
+		MoveContext
+	}
+
+	MoveContext struct {
 		Command        enum.MarchCommand // 造成行军移动的指令
 		Start          *types.Point      // 移动的起点
 		End            *types.Point      // 移动的终点

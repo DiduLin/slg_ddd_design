@@ -7,12 +7,12 @@ import (
 )
 
 type MarchTaskStay struct {
-	marchTaskBase
+	MarchTaskBase
 }
 
 func NewMarchTaskStay(march *March) *MarchTaskStay {
 	task := &MarchTaskStay{
-		marchTaskBase: marchTaskBase{
+		MarchTaskBase: MarchTaskBase{
 			march: march,
 		},
 	}

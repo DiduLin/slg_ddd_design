@@ -6,12 +6,12 @@ import (
 )
 
 type MarchTaskBattleWait struct {
-	marchTaskBase
+	MarchTaskBase
 }
 
 func NewMarchTaskBattleWait(march *March) *MarchTaskBattleWait {
 	task := &MarchTaskBattleWait{
-		marchTaskBase: marchTaskBase{
+		MarchTaskBase: MarchTaskBase{
 			march:    march,
 			duration: time.Hour,
 		},
