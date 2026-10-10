@@ -16,7 +16,6 @@ type (
 		Complete(time.Time)
 		IsComplete() bool
 		Update(now time.Time)
-		Fail(now time.Time)
 	}
 
 	MarchTaskHandler interface {
@@ -24,7 +23,6 @@ type (
 		OnComplete(now time.Time)
 		OnPause(now time.Time)
 		OnResume(now time.Time)
-		OnFail(now time.Time)
 	}
 
 	marchTaskBase struct {
@@ -108,15 +106,5 @@ func (p *marchTaskBase) Update(now time.Time) {
 
 	if now.Equal(p.deadline) || now.After(p.deadline) {
 		p.Complete(now)
-	}
-}
-
-func (p *marchTaskBase) Fail(now time.Time) {
-	if p.isComplete {
-		return
-	}
-
-	if p.handler != nil {
-		p.handler.OnFail(now)
 	}
 }

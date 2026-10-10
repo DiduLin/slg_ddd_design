@@ -35,6 +35,3 @@ func (p *MarchTaskStay) OnPause(now time.Time) {
 func (p *MarchTaskStay) OnResume(now time.Time) {
 	p.march.changeState(enum.MarchState_Stay)
 }
-
-func (p *MarchTaskStay) OnFail(now time.Time) {
-}

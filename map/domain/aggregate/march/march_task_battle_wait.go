@@ -34,6 +34,3 @@ func (p *MarchTaskBattleWait) OnPause(now time.Time) {
 
 func (p *MarchTaskBattleWait) OnResume(now time.Time) {
 }
-
-func (p *MarchTaskBattleWait) OnFail(now time.Time) {
-}

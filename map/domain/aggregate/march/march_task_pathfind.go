@@ -43,7 +43,3 @@ func (p *MarchTaskPathFind) OnPause(now time.Time) {
 
 func (p *MarchTaskPathFind) OnResume(now time.Time) {
 }
-
-func (p *MarchTaskPathFind) OnFail(now time.Time) {
-
-}

@@ -43,6 +43,3 @@ func (p *MarchTaskMove) OnComplete(now time.Time) {
 		p.isComplete = false
 	}
 }
-
-func (p *MarchTaskMove) OnFail(now time.Time) {
-}

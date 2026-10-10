@@ -39,6 +39,3 @@ func (p *MarchTaskRetreatRedirect) OnPause(now time.Time) {
 
 func (p *MarchTaskRetreatRedirect) OnResume(now time.Time) {
 }
-
-func (p *MarchTaskRetreatRedirect) OnFail(now time.Time) {
-}
