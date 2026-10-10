@@ -10,12 +10,11 @@ type MarchTaskPathFind struct {
 	pathfindContext *MarchMoveContext
 }
 
-func NewMarchTaskPathfind(march *March, moveContext *MarchMoveContext, completeCallback func(time.Time)) *MarchTaskPathFind {
+func NewMarchTaskPathfind(march *March, moveContext *MarchMoveContext) *MarchTaskPathFind {
 	task := &MarchTaskPathFind{
 		marchTaskBase: marchTaskBase{
-			march:            march,
-			completeCallback: completeCallback,
-			duration:         time.Second * 3,
+			march:    march,
+			duration: time.Second * 3,
 		},
 		pathfindContext: moveContext,
 	}

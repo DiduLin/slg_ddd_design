@@ -26,15 +26,14 @@ type (
 	}
 
 	marchTaskBase struct {
-		started          bool
-		duration         time.Duration
-		deadline         time.Time
-		paused           bool
-		pauseTime        time.Time
-		march            *March
-		completeCallback func(time.Time)
-		isComplete       bool
-		handler          MarchTaskHandler
+		started    bool
+		duration   time.Duration
+		deadline   time.Time
+		paused     bool
+		pauseTime  time.Time
+		march      *March
+		isComplete bool
+		handler    MarchTaskHandler
 	}
 )
 
@@ -84,10 +83,6 @@ func (p *marchTaskBase) Resume(now time.Time) {
 }
 
 func (p *marchTaskBase) Complete(now time.Time) {
-	if p.completeCallback != nil {
-		p.completeCallback(now)
-	}
-
 	p.isComplete = true
 
 	if p.handler != nil {

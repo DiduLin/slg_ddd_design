@@ -9,12 +9,11 @@ type MarchTaskBattleWait struct {
 	marchTaskBase
 }
 
-func NewMarchTaskBattleWait(march *March, completeCallback func(time.Time)) *MarchTaskBattleWait {
+func NewMarchTaskBattleWait(march *March) *MarchTaskBattleWait {
 	task := &MarchTaskBattleWait{
 		marchTaskBase: marchTaskBase{
-			march:            march,
-			completeCallback: completeCallback,
-			duration:         time.Hour,
+			march:    march,
+			duration: time.Hour,
 		},
 	}
 

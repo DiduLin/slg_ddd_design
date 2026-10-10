@@ -13,11 +13,10 @@ type MarchTaskRetreatRedirect struct {
 	targetObjectID int64
 }
 
-func NewMarchTaskRetreatRedirect(march *March, point types.Point, targetObjectID int64, completeCallback func(time.Time)) *MarchTaskRetreatRedirect {
+func NewMarchTaskRetreatRedirect(march *March, point types.Point, targetObjectID int64) *MarchTaskRetreatRedirect {
 	task := &MarchTaskRetreatRedirect{
 		marchTaskBase: marchTaskBase{
-			march:            march,
-			completeCallback: completeCallback,
+			march: march,
 		},
 		point:          point,
 		targetObjectID: targetObjectID,

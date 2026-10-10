@@ -10,11 +10,10 @@ type MarchTaskStay struct {
 	marchTaskBase
 }
 
-func NewMarchTaskStay(march *March, completeCallback func(time.Time)) *MarchTaskStay {
+func NewMarchTaskStay(march *March) *MarchTaskStay {
 	task := &MarchTaskStay{
 		marchTaskBase: marchTaskBase{
-			march:            march,
-			completeCallback: completeCallback,
+			march: march,
 		},
 	}
 

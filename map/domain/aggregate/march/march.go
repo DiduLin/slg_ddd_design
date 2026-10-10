@@ -71,15 +71,15 @@ func (p *March) StartMarchStay(speed time.Duration, point *types.Point, path []*
 		Path:    path,
 		State:   enum.MarchState_Moving,
 	}
-	task1 := NewMarchTaskMove(p, p.moveContext, p.moveNext())
-	task2 := NewMarchTaskStay(p, nil)
+	task1 := NewMarchTaskMove(p, p.moveContext)
+	task2 := NewMarchTaskStay(p)
 	p.addTask(task1, task2)
 }
 
 func (p *March) TrapedInBattle(now time.Time) {
 	p.pauseTask(now)
 	p.changeState(enum.MarchState_BattleWait)
-	p.addTask(NewMarchTaskBattleWait(p, nil))
+	p.addTask(NewMarchTaskBattleWait(p))
 }
 
 func (p *March) BattleEnd(now time.Time) {
@@ -106,9 +106,9 @@ func (p *March) BattleFail(now time.Time) {
 		State:          enum.MarchState_Rout,
 	}
 	p.addTask(
-		NewMarchTaskPathfind(p, p.moveContext, nil),
-		NewMarchTaskMove(p, p.moveContext, p.moveNext()),
-		NewMarchTaskStay(p, nil),
+		NewMarchTaskPathfind(p, p.moveContext),
+		NewMarchTaskMove(p, p.moveContext),
+		NewMarchTaskStay(p),
 	)
 }
 
@@ -131,14 +131,12 @@ func (p *March) pauseTask(now time.Time) {
 	}
 }
 
-func (p *March) moveNext() func(time.Time) {
-	return func(now time.Time) {
-		ctx := p.moveContext
-		if ctx.PathIndex < len(ctx.Path)-1 {
-			ctx.PathIndex++
-			point := ctx.Path[ctx.PathIndex]
-			p.MoveTo(point.X, point.Y)
-		}
+func (p *March) moveNext() {
+	ctx := p.moveContext
+	if ctx.PathIndex < len(ctx.Path)-1 {
+		ctx.PathIndex++
+		point := ctx.Path[ctx.PathIndex]
+		p.MoveTo(point.X, point.Y)
 	}
 }
 
@@ -153,7 +151,7 @@ func (p *March) pathfindFail() {
 	// 回城寻路失败，直接返回出生点
 	if p.moveContext.Command == enum.MarchCommand_Retreat {
 		p.changeState(p.moveContext.State)
-		p.addTask(NewMarchTaskRetreatRedirect(p, *p.moveContext.End, p.moveContext.TargetObjectID, nil))
+		p.addTask(NewMarchTaskRetreatRedirect(p, *p.moveContext.End, p.moveContext.TargetObjectID))
 	}
 }
 
