@@ -1,22 +1,23 @@
 package march
 
 import (
-	"fmt"
 	"time"
+
+	"github.com/DiduLin/slg_ddd_design/types"
 )
 
 type MarchTaskMove struct {
 	MarchTaskBase
-	context *MarchTaskContext
+	dest *types.Point
 }
 
-func NewMarchTaskMove(march *March, context *MarchTaskContext) *MarchTaskMove {
+func NewMarchTaskMove(march *March, speed time.Duration, dest *types.Point) *MarchTaskMove {
 	task := &MarchTaskMove{
 		MarchTaskBase: MarchTaskBase{
 			march:    march,
-			duration: context.Speed,
+			duration: speed,
 		},
-		context: context,
+		dest: dest,
 	}
 
 	task.handler = task
@@ -24,23 +25,14 @@ func NewMarchTaskMove(march *March, context *MarchTaskContext) *MarchTaskMove {
 }
 
 func (p *MarchTaskMove) OnStart(now time.Time) {
-	p.march.changeState(p.context.State)
 }
 
 func (p *MarchTaskMove) OnResume(now time.Time) {
-	p.march.changeState(p.context.State)
 }
 
 func (p *MarchTaskMove) OnPause(now time.Time) {
 }
 
 func (p *MarchTaskMove) OnComplete(now time.Time) {
-	p.march.moveNext()
-
-	if p.context.End.X != p.march.currPoint.X || p.context.End.Y != p.march.currPoint.Y {
-		p.deadline = now.Add(p.duration)
-		fmt.Printf("deadline: %s\n", p.deadline.Format(time.DateTime))
-
-		p.isComplete = false
-	}
+	p.march.MoveTo(p.dest.X, p.dest.Y)
 }

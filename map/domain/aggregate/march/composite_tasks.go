@@ -24,7 +24,7 @@ func NewRetreatTask(march *March) *CompositeTask {
 
 	return NewCompositeTask(
 		NewMarchTaskPathfind(march, context),
-		NewMarchTaskMove(march, context),
+		NewMarchTaskMoveChain(march, context),
 		NewMarchTaskStay(march),
 	)
 }
@@ -44,7 +44,7 @@ func NewMarchStayTask(march *March, speed time.Duration, point *types.Point, pat
 	march.taskContext = context
 
 	return NewCompositeTask(
-		NewMarchTaskMove(march, context),
+		NewMarchTaskMoveChain(march, context),
 		NewMarchTaskStay(march),
 	)
 }

@@ -5,7 +5,8 @@ import (
 )
 
 type CompositeTask struct {
-	tasks []MarchTask
+	tasks   []MarchTask
+	handler MarchTaskHandler
 }
 
 func NewCompositeTask(tasks ...MarchTask) *CompositeTask {
@@ -17,6 +18,10 @@ func NewCompositeTask(tasks ...MarchTask) *CompositeTask {
 func (p *CompositeTask) Start(now time.Time) {
 	if len(p.tasks) > 0 {
 		p.startTask0(now)
+	}
+
+	if p.handler != nil {
+		p.handler.OnStart(now)
 	}
 }
 
@@ -42,6 +47,10 @@ func (p *CompositeTask) Pause(now time.Time) {
 	}
 
 	p.tasks[0].Pause(now)
+
+	if p.handler != nil {
+		p.handler.OnPause(now)
+	}
 }
 
 func (p *CompositeTask) IsPaused() bool {
@@ -58,30 +67,20 @@ func (p *CompositeTask) Resume(now time.Time) {
 	}
 
 	p.tasks[0].Resume(now)
+
+	if p.handler != nil {
+		p.handler.OnResume(now)
+	}
 }
 
 func (p *CompositeTask) Complete(now time.Time) {
-	if len(p.tasks) == 0 {
-		return
-	}
-
-	p.tasks[0].Complete(now)
-	if !p.tasks[0].IsComplete() {
-		return
-	}
-
-	p.tasks = p.tasks[1:]
-	if len(p.tasks) > 0 {
-		p.startTask0(now)
+	if p.handler != nil {
+		p.handler.OnComplete(now)
 	}
 }
 
 func (p *CompositeTask) IsComplete() bool {
-	if len(p.tasks) == 0 {
-		return true
-	}
-
-	return p.tasks[0].IsComplete()
+	return len(p.tasks) == 0
 }
 
 func (p *CompositeTask) Update(now time.Time) {
@@ -89,9 +88,18 @@ func (p *CompositeTask) Update(now time.Time) {
 		return
 	}
 
-	if now.Equal(p.Deadline()) || now.After(p.Deadline()) {
-		p.Complete(now)
+	task0 := p.tasks[0]
+	task0.Update(now)
+
+	if task0.IsComplete() {
+		p.tasks = p.tasks[1:]
+		if p.IsComplete() {
+			p.Complete(now)
+		} else {
+			p.startTask0(now)
+		}
 	}
+
 }
 
 func (p *CompositeTask) startTask0(now time.Time) {
